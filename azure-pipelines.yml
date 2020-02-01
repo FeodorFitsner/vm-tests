@@ -1,0 +1,30 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+
+- powershell: (Get-WmiObject Win32_Processor).VirtualizationFirmwareEnabled[0]
+  displayName: Check virtualization enabled
+
+- powershell: (Get-WmiObject Win32_Processor).SecondLevelAddressTranslationExtensions[0]
+  displayName: Check virtualization extensions enabled
+
+- script: docker images
+  displayName: Docker images
+
+- powershell: |
+    $destPath = "$(pwd)\diskspd"
+    $zipPath = "$env:TEMP\DiskSpd-2.0.21a.zip"
+    (New-Object Net.WebClient).DownloadFile('https://gallery.technet.microsoft.com/DiskSpd-A-Robust-Storage-6ef84e62/file/199535/2/DiskSpd-2.0.21a.zip', $zipPath)
+    7z x $zipPath -aoa -o"$destPath"
+    dir
+  displayName: Install DiskSpd
+
+- script: .\diskspd\amd64\diskspd -c1G -d60 -r -w40 -t2 -o32 -b64K -Sh -L C:\testfile1.dat
+  displayName: 'Check C:\'
+
+- script: .\diskspd\amd64\diskspd -c1G -d60 -r -w40 -t2 -o32 -b64K -Sh -L D:\testfile1.dat
+  displayName: 'Check D:\'
