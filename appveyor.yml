@@ -8,11 +8,19 @@ install:
   displayName: Install DiskSpd
 
 test_script:
+- ps: |
+    foreach($disk in (Get-WmiObject -Class Win32_logicaldisk))
+    {
+        Write-Host "$($disk.DeviceID), $([int]($disk.Size/1024/1024/1024)) GB total, $([int]($disk.FreeSpace/1024/1024/1024)) GB free"
+    }
+
+- systeminfo
+
 - ps: (Get-WmiObject Win32_Processor).VirtualizationFirmwareEnabled[0]
 - ps: (Get-WmiObject Win32_Processor).SecondLevelAddressTranslationExtensions[0]
 
 - docker images
-- docker run --rm busybox echo hello_world
+#- docker run --rm busybox echo hello_world
 
 - .\diskspd\amd64\diskspd -c1G -d60 -r -w40 -t2 -o32 -b64K -Sh -L C:\testfile1.dat
 - .\diskspd\amd64\diskspd -c1G -d60 -r -w40 -t2 -o32 -b64K -Sh -L D:\testfile1.dat
