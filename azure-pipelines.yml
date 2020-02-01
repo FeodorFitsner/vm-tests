@@ -15,7 +15,7 @@ steps:
 - script: docker images
   displayName: Docker images
 
-- ps: |
+- powershell: |
     foreach($disk in (Get-WmiObject -Class Win32_logicaldisk))
     {
         Write-Host "$($disk.DeviceID), $([int]($disk.Size/1024/1024/1024)) GB total, $([int]($disk.FreeSpace/1024/1024/1024)) GB free"
