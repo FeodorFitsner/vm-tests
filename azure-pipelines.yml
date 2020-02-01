@@ -12,6 +12,9 @@ steps:
 - powershell: (Get-WmiObject Win32_Processor).SecondLevelAddressTranslationExtensions[0]
   displayName: Check virtualization extensions enabled
 
+- powershell: Install-WindowsFeature -Name Hyper-V -IncludeManagementTools
+  displayName: Installing Hyper-V feature
+
 - script: docker images
   displayName: Docker images
 
