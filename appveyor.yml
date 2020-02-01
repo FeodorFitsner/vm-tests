@@ -10,7 +10,10 @@ install:
 test_script:
 - ps: (Get-WmiObject Win32_Processor).VirtualizationFirmwareEnabled[0]
 - ps: (Get-WmiObject Win32_Processor).SecondLevelAddressTranslationExtensions[0]
+
 - docker images
+- docker run --rm busybox echo hello_world
+
 - .\diskspd\amd64\diskspd -c1G -d60 -r -w40 -t2 -o32 -b64K -Sh -L C:\testfile1.dat
 - .\diskspd\amd64\diskspd -c1G -d60 -r -w40 -t2 -o32 -b64K -Sh -L D:\testfile1.dat
  
